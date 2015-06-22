@@ -1,0 +1,4 @@
+*.dat
+*.png
+bin/
+result/
