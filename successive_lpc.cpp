@@ -71,9 +71,11 @@ int main(int argc, char *argv[]){
 	xr = (double*)calloc(sizeof(double), frameLength);
 	rr = (double*)calloc( sizeof(double), frameLength);
 	lpcc = (double*)calloc( sizeof(double), N+1);  //配列インデックスを1〜Nにするため。
-	int r = fread(rawData, sizeof(short), frameLength, input);
-	int now = 0;
-	while(r > 0){
+	int r, sum, now;
+	sum = now = 0;
+	while( (r = fread(rawData, sizeof(short), frameLength, input)) > 0){
+		sum += r * (int)sizeof(short);
+		printf("%d : r = %d, sum = %d\n", now, r, sum);
 		if(r != frameLength) frameLength = r;
 		//窓掛け
 		for(int n=0;n<frameLength;n++){
@@ -104,9 +106,9 @@ int main(int argc, char *argv[]){
 		}
 		fprintf(output, "%f)\n", lpcc[N]);
 		//解析開始位置をずらす
-		fseek(input, skipSample * sizeof(short), SEEK_CUR);
-		now += skipSample;
-		r = fread(rawData, sizeof(short), frameLength, input);
+		++now;
+		int tmp = skipSample * now;
+		fseek(input, tmp * sizeof(short), SEEK_SET);
 	}
 
 	fclose(input);

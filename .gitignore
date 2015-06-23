@@ -1,4 +1,5 @@
 *.dat
 *.png
+*.txt
 bin/
 result/
